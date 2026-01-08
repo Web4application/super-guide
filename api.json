@@ -1,0 +1,1476 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+        "contact": {
+            "name": "API Support",
+            "url": "/"
+        },
+        "description": "Import & Store Files",
+        "license": {
+            "name": "AGPLv3",
+            "url": "https://www.gnu.org/licenses/agpl-3.0"
+        },
+        "title": "AURA Tank API",
+        "version": "1.0"
+    },
+    "servers": [
+        {
+            "url": "/"
+        }
+    ],
+    "paths": {
+        "/api/v1/debug/application-state": {
+            "delete": {
+                "description": "Purges all the data and returns the deleted count for each of the models",
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/store.DeleteCounter"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error"
+                    }
+                },
+                "summary": "Purges all the data"
+            }
+        },
+        "/api/v1/files": {
+            "get": {
+                "description": "Lists files of a show or by their IDs",
+                "parameters": [
+                    {
+                        "description": "ID of the show",
+                        "in": "query",
+                        "name": "showId",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "IDs for the files",
+                        "explode": false,
+                        "in": "query",
+                        "name": "ids",
+                        "schema": {
+                            "items": {
+                                "type": "integer"
+                            },
+                            "type": "array"
+                        },
+                        "style": "form"
+                    },
+                    {
+                        "description": "Limit number of results",
+                        "in": "query",
+                        "name": "limit",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "Start listing from offset",
+                        "in": "query",
+                        "name": "offset",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.FilesListing"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Bad Request"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Forbidden"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error"
+                    }
+                },
+                "summary": "List files"
+            },
+            "post": {
+                "description": "Adds a file and starts import",
+                "parameters": [
+                    {
+                        "description": "running|done - If given, return not before import has the given state",
+                        "in": "query",
+                        "name": "waitFor",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/v1.FileCreateRequest"
+                            }
+                        }
+                    },
+                    "description": "URI of the file",
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/store.File"
+                                }
+                            }
+                        },
+                        "description": "Created"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Bad Request"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Forbidden"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error"
+                    }
+                },
+                "summary": "Add file",
+                "x-codegen-request-body-name": "file"
+            }
+        },
+        "/api/v1/files/{id}": {
+            "delete": {
+                "description": "Removes a file.",
+                "parameters": [
+                    {
+                        "description": "ID of the file",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "content": {},
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Bad Request"
+                    },
+                    "403": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Not Found"
+                    },
+                    "409": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Conflict"
+                    },
+                    "500": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error"
+                    }
+                },
+                "summary": "Delete file"
+            },
+            "get": {
+                "description": "Retrieves file object.",
+                "parameters": [
+                    {
+                        "description": "ID of the file",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/store.File"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Bad Request"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error"
+                    }
+                },
+                "summary": "Retrieve file"
+            },
+            "patch": {
+                "description": "Updates file metadata.",
+                "parameters": [
+                    {
+                        "description": "ID of the file",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/store.FileMetadata"
+                            }
+                        }
+                    },
+                    "description": "File metadata",
+                    "required": false
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/store.File"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Bad Request"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error"
+                    }
+                },
+                "summary": "Update file",
+                "x-codegen-request-body-name": "metadata"
+            }
+        },
+        "/api/v1/files/{id}/import": {
+            "delete": {
+                "description": "Cancels import of file.",
+                "parameters": [
+                    {
+                        "description": "ID of the show",
+                        "in": "query",
+                        "name": "showId",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "ID of the file",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "content": {},
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Bad Request"
+                    },
+                    "403": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "No job for this file"
+                    },
+                    "500": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error"
+                    }
+                },
+                "summary": "Cancel file import"
+            },
+            "get": {
+                "description": "Retrieves import status of the file.",
+                "parameters": [
+                    {
+                        "description": "ID of the show",
+                        "in": "query",
+                        "name": "showId",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "ID of the file",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "running|done - If given, return not before import has the given state",
+                        "in": "query",
+                        "name": "waitFor",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/importer.Job"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Bad Request"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "No job for this file"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error"
+                    }
+                },
+                "summary": "Retrieve import status"
+            }
+        },
+        "/api/v1/files/{id}/logs": {
+            "get": {
+                "description": "Retrieves import logs of the file.",
+                "parameters": [
+                    {
+                        "description": "ID of the file",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.FileImportLogs"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Bad Request"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error"
+                    }
+                },
+                "summary": "Retrieve import logs"
+            }
+        },
+        "/api/v1/files/{id}/upload": {
+            "get": {
+                "description": "Uploads file content. Only available if file was created using SourceURI set to upload://-type and file import state is running.",
+                "parameters": [
+                    {
+                        "description": "ID of the show",
+                        "in": "query",
+                        "name": "showId",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "ID of the file",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "A unique identifier for the uploaded file",
+                        "in": "query",
+                        "name": "flowIdentifier",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {},
+                        "description": "OK"
+                    },
+                    "204": {
+                        "content": {},
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Bad Request"
+                    },
+                    "403": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Forbidden"
+                    },
+                    "409": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Conflict"
+                    },
+                    "500": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error"
+                    }
+                },
+                "summary": "Upload file content"
+            },
+            "post": {
+                "description": "Uploads file content via flow.js. Only available if file was created using SourceURI set to upload://-type and file import state is running.",
+                "parameters": [
+                    {
+                        "description": "ID of the file",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {},
+                        "description": "OK"
+                    },
+                    "400": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Bad Request"
+                    },
+                    "403": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Forbidden"
+                    },
+                    "409": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Conflict"
+                    },
+                    "500": {
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error"
+                    }
+                },
+                "summary": "Upload file content"
+            },
+            "put": {
+                "description": "Uploads file content. Only available if file was created using SourceURI set to upload://-type and file import state is running.",
+                "parameters": [
+                    {
+                        "description": "ID of the show",
+                        "in": "query",
+                        "name": "showId",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "ID of the file",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {},
+                        "description": "OK"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Bad Request"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error"
+                    }
+                },
+                "summary": "Upload file content"
+            }
+        },
+        "/api/v1/imports": {
+            "get": {
+                "description": "Lists all running and pending imports",
+                "parameters": [
+                    {
+                        "description": "ID of the show",
+                        "in": "query",
+                        "name": "showId",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "Limit number of results",
+                        "in": "query",
+                        "name": "limit",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "Start listing from offset",
+                        "in": "query",
+                        "name": "offset",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.JobsListing"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Bad Request"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Forbidden"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error"
+                    }
+                },
+                "summary": "List imports"
+            }
+        },
+        "/api/v1/shows": {
+            "get": {
+                "description": "Lists all existing shows",
+                "parameters": [
+                    {
+                        "description": "Limit number of results",
+                        "in": "query",
+                        "name": "limit",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "Start listing from offset",
+                        "in": "query",
+                        "name": "offset",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ShowsListing"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error"
+                    }
+                },
+                "summary": "List shows"
+            }
+        },
+        "/api/v1/shows/": {
+            "post": {
+                "description": "Creates a new show",
+                "parameters": [
+                    {
+                        "description": "ID of the show to be created",
+                        "in": "query",
+                        "name": "showId",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "If given, all files and playlists will be copied from the show",
+                        "in": "query",
+                        "name": "cloneFrom",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/store.Show"
+                                }
+                            }
+                        },
+                        "description": "Created"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Not Found"
+                    },
+                    "409": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Conflict"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error"
+                    }
+                },
+                "summary": "Create show"
+            }
+        },
+        "/api/v1/shows/{id}": {
+            "delete": {
+                "description": "Deletes a show",
+                "parameters": [
+                    {
+                        "description": "ID of the show to be deleted",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "content": {},
+                        "description": "No Content"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Forbidden"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error"
+                    }
+                },
+                "summary": "Delete show"
+            }
+        },
+        "/healthz": {
+            "get": {
+                "description": "Checks daemon health.",
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/main.Health"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error"
+                    }
+                },
+                "summary": "Check health"
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "importer.Job": {
+                "properties": {
+                    "created": {
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "integer"
+                    },
+                    "progress": {
+                        "type": "integer"
+                    },
+                    "refID": {
+                        "type": "string"
+                    },
+                    "show": {
+                        "type": "integer"
+                    },
+                    "source": {
+                        "$ref": "#/components/schemas/importer.SourceURL"
+                    },
+                    "started": {
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "state": {
+                        "$ref": "#/components/schemas/importer.JobState"
+                    },
+                    "user": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "importer.JobState": {
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5
+                ],
+                "format": "int32",
+                "type": "integer",
+                "x-enum-varnames": [
+                    "JobCanceled",
+                    "JobNew",
+                    "JobInitializing",
+                    "JobPending",
+                    "JobRunning",
+                    "JobDestroying"
+                ]
+            },
+            "importer.SourceURL": {
+                "properties": {
+                    "forceQuery": {
+                        "description": "append a query ('?') even if RawQuery is empty",
+                        "type": "boolean"
+                    },
+                    "fragment": {
+                        "description": "fragment for references, without '#'",
+                        "type": "string"
+                    },
+                    "host": {
+                        "description": "host or host:port (see Hostname and Port methods)",
+                        "type": "string"
+                    },
+                    "omitHost": {
+                        "description": "do not emit empty host (authority)",
+                        "type": "boolean"
+                    },
+                    "opaque": {
+                        "description": "encoded opaque data",
+                        "type": "string"
+                    },
+                    "path": {
+                        "description": "path (relative paths may omit leading slash)",
+                        "type": "string"
+                    },
+                    "rawFragment": {
+                        "description": "encoded fragment hint (see EscapedFragment method)",
+                        "type": "string"
+                    },
+                    "rawPath": {
+                        "description": "encoded path hint (see EscapedPath method)",
+                        "type": "string"
+                    },
+                    "rawQuery": {
+                        "description": "encoded query values, without '?'",
+                        "type": "string"
+                    },
+                    "scheme": {
+                        "type": "string"
+                    },
+                    "user": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/url.Userinfo"
+                            }
+                        ],
+                        "description": "username and password information",
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "main.Health": {
+                "properties": {
+                    "auth": {
+                        "example": "OK",
+                        "type": "string"
+                    },
+                    "importer": {
+                        "example": "OK",
+                        "type": "string"
+                    },
+                    "store": {
+                        "example": "OK",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "store.DeleteCounter": {
+                "properties": {
+                    "files": {
+                        "type": "integer"
+                    },
+                    "importLogs": {
+                        "type": "integer"
+                    },
+                    "shows": {
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "store.File": {
+                "properties": {
+                    "created": {
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "duration": {
+                        "type": "number"
+                    },
+                    "format": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "integer"
+                    },
+                    "metadata": {
+                        "$ref": "#/components/schemas/store.FileMetadata"
+                    },
+                    "showId": {
+                        "type": "integer"
+                    },
+                    "size": {
+                        "type": "integer"
+                    },
+                    "source": {
+                        "$ref": "#/components/schemas/store.FileSource"
+                    },
+                    "updated": {
+                        "format": "date-time",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "store.FileMetadata": {
+                "properties": {
+                    "album": {
+                        "type": "string"
+                    },
+                    "artist": {
+                        "description": "actually a full-text index would be nice here...",
+                        "type": "string"
+                    },
+                    "isrc": {
+                        "type": "string"
+                    },
+                    "organization": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "store.FileSource": {
+                "properties": {
+                    "hash": {
+                        "type": "string"
+                    },
+                    "import": {
+                        "$ref": "#/components/schemas/store.Import"
+                    },
+                    "uri": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "store.Import": {
+                "properties": {
+                    "error": {
+                        "type": "string"
+                    },
+                    "state": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "store.ImportLogs": {
+                "additionalProperties": {
+                    "$ref": "#/components/schemas/store.Log"
+                },
+                "type": "object"
+            },
+            "store.Log": {
+                "type": "object"
+            },
+            "store.Show": {
+                "properties": {
+                    "created": {
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "integer"
+                    },
+                    "updated": {
+                        "format": "date-time",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "url.Userinfo": {
+                "type": "object"
+            },
+            "v1.ErrorResponse": {
+                "properties": {
+                    "detail": {
+                        "type": "object"
+                    },
+                    "error": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "v1.FileCreateRequest": {
+                "properties": {
+                    "description": {
+                        "type": "string"
+                    },
+                    "showId": {
+                        "type": "integer"
+                    },
+                    "sourceURI": {
+                        "enum": [
+                            "upload://<filename>",
+                            "https://<host>/<path>",
+                            "file:///<path>"
+                        ],
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "v1.FileImportLogs": {
+                "properties": {
+                    "results": {
+                        "$ref": "#/components/schemas/store.ImportLogs"
+                    }
+                },
+                "type": "object"
+            },
+            "v1.FilesListing": {
+                "properties": {
+                    "results": {
+                        "items": {
+                            "$ref": "#/components/schemas/store.File"
+                        },
+                        "type": "array"
+                    }
+                },
+                "type": "object"
+            },
+            "v1.JobsListing": {
+                "properties": {
+                    "results": {
+                        "items": {
+                            "$ref": "#/components/schemas/importer.Job"
+                        },
+                        "type": "array"
+                    }
+                },
+                "type": "object"
+            },
+            "v1.ShowsListing": {
+                "properties": {
+                    "results": {
+                        "items": {
+                            "$ref": "#/components/schemas/store.Show"
+                        },
+                        "type": "array"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "ApiKeyAuth": {
+                "in": "header",
+                "name": "Authorization",
+                "type": "apiKey"
+            }
+        }
+    },
+    "x-original-swagger-version": "2.0"
+}
