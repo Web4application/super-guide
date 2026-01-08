@@ -1,0 +1,21 @@
+-- Migration Script for Database Schema Changes
+
+-- Step 1: Create a new table
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(50) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Step 2: Add a new column to an existing table
+ALTER TABLE orders ADD COLUMN status VARCHAR(20);
+
+-- Step 3: Update existing data
+UPDATE users SET email = LOWER(email);
+
+-- Step 4: Remove an old column
+ALTER TABLE products DROP COLUMN old_column;
+
+-- Step 5: Add a new index
+CREATE INDEX idx_users_username ON users(username);
