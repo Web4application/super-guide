@@ -1,4 +1,4 @@
-env CGO_ENABLED=0
+env CGO_ENABLED=0 
 
 [GOOS:darwin] [!short] [race] go build -race triv.go
 
