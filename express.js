@@ -4,14 +4,14 @@ const axios = require('axios');
 const { Client, GatewayIntentBits } = require('discord.js');
 
 const app = express();
-const port = 3000;
+const port = 8080;
 
 app.use(bodyParser.json());
 
 // Discord bot setup
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
 const discordToken = '1156354267817447486';
-const openaiApiKey = 'AIzaSyAvrxOyAVzPVcnzxuD0mjKVDyS2bNWfC10';
+const openaiApiKey = '';
 
 client.once('ready', () => {
 console.log('Discord bot is online!');
