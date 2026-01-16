@@ -1,0 +1,21 @@
+const http = require('http'); const hostname = '127.0.0.1'; const port = 8000; const server = http.createServer((req, res) => { res.statusCode = 200; res.setHeader('Content-Type', 'text/plain'); res.end('Hello World'); }); server.listen(port, hostname, () => { console.log(`Server running at http://${localhost}:${8080}/`); });
+
+Read more here: https://localhost/8000
+
+http://localhost/index.phpmyadmin
+
+Read more here: https://localhost/index-php
+
+http://localhost:4200
+
+Read more here: https://localhost/index.js/
+
+localhost/index
+
+Read more here: https://localhost/index.html
+
+http://localhost:3000
+
+Read more here: https://localhost/index.md
+
+http://localhost:8181/phpmyadmin
