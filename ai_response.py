@@ -4,7 +4,7 @@ let prompt = "build models,train models,compile data,run data,convert websites t
 let response = try await model.generateContent(prompt, cookieImage)
 let response = try await model.generateContent(prompt)
 async function interactWithChatGPT(response) {
-    const apiKey = '$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';
+    const apiKey = '$sk-
     const apiUrl = 'https://api.openai.com/v1/chat/completions';
 
     const response = await fetch(apiUrl, {
