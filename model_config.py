@@ -1,18 +1,13 @@
-
 from dataclasses import dataclass
 from typing import Optional
-
 import torch
-
 from cpufeature import CPUFeature
 from petals.constants import PUBLIC_INITIAL_PEERS
-
 
 @dataclass
 class ModelInfo:
     repo: str
     adapter: Optional[str] = None
-
 
 MODELS = [
     ModelInfo(repo="meta-llama/Llama-2-70b-chat-hf"),
